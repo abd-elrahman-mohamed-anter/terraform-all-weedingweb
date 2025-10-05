@@ -1,105 +1,114 @@
-# 🚀 Challenge 3 as part of #10WeeksofCloudOps - 2 tier Application using terraform 
+#  Wedding Website Deployment
 
-✨This repository is created to learn and deploy a 2-tier application on aws cloud through Terraform. 
+✨ This repository demonstrates deploying a **2-tier wedding website** on AWS using **Terraform**.
 
-## If you are a visual learner, feel free to check out this video: 
-[![2-tier Architecture using terraform](https://img.youtube.com/vi/s8q5B6DLH7s/sddefault.jpg)](https://youtu.be/s8q5B6DLH7s)
+---
 
-## 🏠 Architecture
+## 🎥 Visual Demo
 
-![Architecture diagram](https://github.com/AnkitJodhani/3rdWeekofCloudOps/blob/main/architecture.gif)
+If you are a visual learner, you can see a demo of the live website served via AWS Load Balancer:
 
-[Image Source: Ankit Jodhani](https://github.com/AnkitJodhani/3rdWeekofCloudOps/blob/main/architecture.gif)
+![Website Demo](front.jpg)
 
-## 🖥️ Installation of Terraform
+---
 
-**Note**: Follow the blog for the step-by-step instructions to build this project. [Terraform](https://ankitjodhani.hashnode.dev/implementing-two-tier-architecture-in-aws-with-terraform-step-by-step-guide-10weeksofcloudops)
+## 🔹 Architecture Overview
 
-### Create S3 Backend Bucket
-Create an S3 bucket to store the .tfstate file in the remote backend
+- **2-tier application**
+  - **Web Tier:** EC2 instances running the wedding website
+  - **Database Tier:** MySQL RDS instance
+- **Networking**
+  - Public and private subnets in a VPC
+  - Application Load Balancer (ALB) routing HTTP traffic to the web tier
+- **Auto Scaling**
+  - Auto Scaling Group (ASG) to dynamically scale instances based on CPU utilization
+- **CDN**
+  - CloudFront distribution for global caching and faster delivery
 
-**Warning!** It is highly recommended that you `enable Bucket Versioning` on the S3 bucket to allow for state recovery in the case of accidental deletions and human error.
+**Screenshots from AWS:**
 
-**Note**: We will need this bucket name in the later step
+- Load Balancer List: ![Load Balancers](lb.png)  
+- Load Balancer Details: ![ALB Details](enter-lb.png)  
+- CloudFront Distribution: ![CloudFront](cloudfront.png)  
+- Website Frontend: ![Website](front.jpg)
 
-### Create a Dynamo DB table for state file locking
-- Give the table a name
-- Make sure to add a `Partition key` with the name `LockID` and type as `String`
+---
 
-### Generate a public-private key pair for our instances
-We need a public key and a private key for our server so please follow the procedure I've included below.
+## 🗂️ Project Setup
 
-```sh
-cd modules/key/
-ssh-keygen
-```
-The above command asks for the key name and then gives `client_key` it will create a pair of keys one public and one private. you can give any name you want but then you need to edit the Terraform file
+### 1. Terraform Backend (optional)
 
-Edit the below file according to your configuration
-```sh
-vim root/backend.tf
-```
-Add the below code in root/backend.tf
-```sh
+If you want to store state in **S3 with DynamoDB locking**, add a `backend.tf`:
+
+```hcl
 terraform {
   backend "s3" {
-    bucket = "BUCKET_NAME"
-    key    = "backend/FILE_NAME_TO_STORE_STATE.tfstate"
-    region = "us-east-1"
-    dynamodb_table = "dynamoDB_TABLE_NAME"
+    bucket         = "YOUR_BUCKET_NAME"
+    key            = "backend/wedding_website.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "YOUR_DYNAMODB_TABLE_NAME"
   }
 }
-```
-### 🏠 Let's set up the variable for our Infrastructure
-Create one file with the name `terraform.tfvars` 
-```sh
-vim root/terraform.tfvars
-```
-### 🔐 ACM certificate
-Go to AWS console --> AWS Certificate Manager (ACM) and make sure you have a valid certificate in Issued status, if not, feel free to create one and use the domain name on which you are planning to host your application.
+````
 
-### 👨‍💻 Route 53 Hosted Zone
-Go to AWS Console --> Route53 --> Hosted Zones and ensure you have a public hosted zone available, if not create one.
+### 2. Configure Variables
 
-Add the below content into the `root/terraform.tfvars` file and add the values of each variable.
-```javascript
-region = ""
-project_name = ""
-vpc_cidr                = ""
-pub_sub_1a_cidr        = ""
-pub_sub_2b_cidr        = ""
-pri_sub_3a_cidr        = ""
-pri_sub_4b_cidr        = ""
-pri_sub_5a_cidr        = ""
-pri_sub_6b_cidr        = ""
-db_username = ""
-db_password = ""
-certificate_domain_name = ""
+Edit `terraform.tfvars` in the `root` directory with your environment values:
+
+```hcl
+region = "us-east-1"
+project_name = "wedding-website"
+vpc_cidr = "10.0.0.0/16"
+
+pub_sub_1a_cidr = "10.0.1.0/24"
+pub_sub_2b_cidr = "10.0.2.0/24"
+pri_sub_3a_cidr = "10.0.3.0/24"
+pri_sub_4b_cidr = "10.0.4.0/24"
+pri_sub_5a_cidr = "10.0.5.0/24"
+pri_sub_6b_cidr = "10.0.6.0/24"
+
+db_username = "admin"
+db_password = "securepassword"
+certificate_domain_name = "example.com"
 additional_domain_name = ""
-
 ```
 
-## ✈️ Now we are ready to deploy our application on the cloud ⛅
-get into the project directory 
+### 3. Initialize and Deploy
+
+Go to the `root` folder:
+
 ```sh
 cd root
-```
-👉 let install dependency to deploy the application 
-
-```sh
-terraform init 
-```
-
-Type the below command to see the plan of the execution 
-```sh
+terraform init
 terraform plan
+terraform apply
 ```
 
-✨Finally, HIT the below command to deploy the application...
-```sh
-terraform apply 
+Type `yes` to confirm deployment.
+
+---
+
+## ⚠️ Notes
+
+* `.gitignore` is included to avoid uploading sensitive files:
+
+```gitignore
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+crash.log
 ```
 
-Type `yes`, and it will prompt you for approval..
+* CloudFront and RDS may have **Free Tier restrictions**, so ensure your AWS account supports the chosen instance sizes.
+
+---
+
+## 💡 Author
+
+* **Abd Elrahman Mohamed Anter**
+* Contact: [Linkedin](www.linkedin.com/in/abd-elrahman-mohamed-anter)
+
 
 **Thank you so much for reading..😅**
