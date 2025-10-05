@@ -1,4 +1,5 @@
-#  Wedding Website Deployment
+
+# Wedding Website Deployment
 
 ✨ This repository demonstrates deploying a **2-tier wedding website** on AWS using **Terraform**.
 
@@ -14,44 +15,33 @@ If you are a visual learner, you can see a demo of the live website served via A
 
 ## 🔹 Architecture Overview
 
-- **2-tier application**
-  - **Web Tier:** EC2 instances running the wedding website
-  - **Database Tier:** MySQL RDS instance
-- **Networking**
-  - Public and private subnets in a VPC
-  - Application Load Balancer (ALB) routing HTTP traffic to the web tier
-- **Auto Scaling**
-  - Auto Scaling Group (ASG) to dynamically scale instances based on CPU utilization
-- **CDN**
-  - CloudFront distribution for global caching and faster delivery
+* **2-tier application**
+
+  * **Web Tier:** EC2 instances running the wedding website, behind an **Application Load Balancer (ALB)**
+  * **Database Tier:** MySQL RDS instance in private subnets
+* **Networking**
+
+  * Public and private subnets in a VPC, with security groups for access control
+  * ALB routing HTTP traffic to the web tier
+* **Auto Scaling**
+
+  * Auto Scaling Group (ASG) automatically adjusts the number of instances based on **CPU utilization**
+* **CDN**
+
+  * **CloudFront distribution** provides **fast global delivery** and reduces latency by caching content closer to users
 
 **Screenshots from AWS:**
 
-- Load Balancer List: ![Load Balancers](lb.png)  
-- Load Balancer Details: ![ALB Details](enter-lb.png)  
-- CloudFront Distribution: ![CloudFront](cloudfront.png)  
-- Website Frontend: ![Website](front.png)
+* Load Balancer List: ![Load Balancers](lb.png)
+* Load Balancer Details: ![ALB Details](enter-lb.png)
+* CloudFront Distribution: ![CloudFront](cloudfront.png)
+* Website Frontend: ![Website](front.png)
 
 ---
 
 ## 🗂️ Project Setup
 
-### 1. Terraform Backend (optional)
-
-If you want to store state in **S3 with DynamoDB locking**, add a `backend.tf`:
-
-```hcl
-terraform {
-  backend "s3" {
-    bucket         = "YOUR_BUCKET_NAME"
-    key            = "backend/wedding_website.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "YOUR_DYNAMODB_TABLE_NAME"
-  }
-}
-````
-
-### 2. Configure Variables
+### 1. Configure Variables
 
 Edit `terraform.tfvars` in the `root` directory with your environment values:
 
@@ -71,7 +61,7 @@ db_username = "admin"
 db_password = "pass"
 ```
 
-### 3. Initialize and Deploy
+### 2. Initialize and Deploy
 
 Go to the `root` folder:
 
@@ -101,6 +91,8 @@ crash.log
 
 * CloudFront and RDS may have **Free Tier restrictions**, so ensure your AWS account supports the chosen instance sizes.
 
+* Auto Scaling Group automatically scales **web instances** up or down depending on load.
+
 ---
 
 ## 💡 Author
@@ -108,5 +100,6 @@ crash.log
 * **Abd Elrahman Mohamed Anter**
 * Contact: [Linkedin](www.linkedin.com/in/abd-elrahman-mohamed-anter)
 
+---
 
 **Thank you so much for reading..😅**
