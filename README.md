@@ -10,6 +10,7 @@
 If you are a visual learner, you can see a demo of the live website served via AWS Load Balancer:
 
 ![Website Demo](front.png)
+*Frontend of the wedding website showing the homepage with "HI THERE, YOU'RE INVITED" and the "SAVE THE DATE" box.*
 
 ---
 
@@ -33,9 +34,16 @@ If you are a visual learner, you can see a demo of the live website served via A
 **Screenshots from AWS:**
 
 * Load Balancer List: ![Load Balancers](lb.png)
+  *Shows all load balancers in the AWS account. The ALB `my-terraform-project-alb` is active and Internet-facing.*
+
 * Load Balancer Details: ![ALB Details](enter-lb.png)
+  *Details of the Application Load Balancer including listeners and default actions forwarding traffic to the target group.*
+
 * CloudFront Distribution: ![CloudFront](cloudfront.png)
+  *CloudFront distribution settings showing domain name, caching, and HTTP/2 support for fast global content delivery.*
+
 * Website Frontend: ![Website](front.png)
+  *Live wedding website homepage displayed through the ALB, showing invitation details and navigation links.*
 
 ---
 
