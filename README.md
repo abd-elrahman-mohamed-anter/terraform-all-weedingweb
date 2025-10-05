@@ -8,7 +8,7 @@
 
 If you are a visual learner, you can see a demo of the live website served via AWS Load Balancer:
 
-![Website Demo](front.jpg)
+![Website Demo](front.png)
 
 ---
 
@@ -30,7 +30,7 @@ If you are a visual learner, you can see a demo of the live website served via A
 - Load Balancer List: ![Load Balancers](lb.png)  
 - Load Balancer Details: ![ALB Details](enter-lb.png)  
 - CloudFront Distribution: ![CloudFront](cloudfront.png)  
-- Website Frontend: ![Website](front.jpg)
+- Website Frontend: ![Website](front.png)
 
 ---
 
